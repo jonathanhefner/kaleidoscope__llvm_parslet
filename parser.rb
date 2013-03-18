@@ -31,12 +31,15 @@ module Kaleidoscope
     rule(:ident) { keyword.absent? >> (alpha >> alphanum.repeat).as(:ident) >> sp? }
     
     # parslet implements PEG, therefore no left-recursion
-    rule(:e3) { (lparen >> expr >> rparen) | num | ident }
+    rule(:e3) { (lparen >> expr >> rparen) | func_call | num | ident }
     rule(:e2) { (e3.as(:left) >> (mult_op >> e3.as(:right)).repeat(1).as(:rights)) | e3 }
     rule(:e1) { (e2.as(:left) >> (add_op >> e2.as(:right)).repeat(1).as(:rights)) | e2 }
     rule(:e0) { (e1.as(:left) >> (comp_op >> e1.as(:right)).repeat(1).as(:rights)) | e1 }
     rule(:expr) { e0 }
-
+    
+    rule(:expr_seq) { delim.absent? >> expr.maybe >> (delim >> expr).repeat }
+    rule(:func_call) { ident >> lparen >> expr_seq.as(:args) >> rparen }
+    
     rule(:ident_seq) { delim.absent? >> ident.maybe >> (delim >> ident).repeat }
     rule(:func_def) { func_start >> ident >> lparen >> ident_seq.as(:params) >> rparen >> expr.as(:body) }
     
@@ -63,6 +66,10 @@ module Kaleidoscope
   end
   
   
+  class FuncCall < Struct.new(:name, :args)
+  end
+  
+  
   class FuncDef < Struct.new(:name, :params, :body)
   end
 
@@ -84,8 +91,12 @@ module Kaleidoscope
       OpSequence.new(left, rights)
     }
     
+    rule(ident: simple(:name), args: sequence(:args)) {
+      FuncCall.new(name, args)
+    }
+    
     rule(ident: simple(:name), params: sequence(:params), body: subtree(:body)) {
-      FuncDef.new(name, params, body)
+      FuncDef.new(name, params.map{|p| p.name }, body)
     }
   end
 

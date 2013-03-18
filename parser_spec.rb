@@ -56,6 +56,8 @@ describe Kaleidoscope::Parser do
   context '#expr' do
     subject { parser.expr }
     
+    it { should parse('1 + b + foo(3)') }
+    
     it { should_not parse('x y') }
     it { should_not parse('x + y y + z') }
     
@@ -88,9 +90,39 @@ describe Kaleidoscope::Parser do
     
     it { should parse('#') }
     it { should parse('# THIS IS A COMMENT') }
+    
     it { should_not parse("# THIS IS A COMMENT FOLLOWED BY STUFF\n1+1") }
   end
+  
 
+  context '#expr_seq' do
+    subject { parser.expr_seq }
+    
+    it { should parse('') }
+    it { should parse('1') }
+    it { should parse('1,a,3') }
+    it { should parse('a , 2 , c') }
+    it { should parse('a + 1, 2 + b, c + 3') }
+    
+    it { should_not parse(',') }
+    it { should_not parse(',1') }
+    it { should_not parse('1,') }
+    it { should_not parse('1 2') }
+  end
+  
+  
+  context '#func_call' do
+    subject { parser.func_call }
+    
+    it { should parse('foo()') }
+    it { should parse('foo(1)') }
+    it { should parse('foo(a, 2)') }
+    
+    it { should_not parse('foo') }
+    it { should_not parse('foo(') }
+    it { should_not parse('foo 1') }
+  end
+  
   
   context '#ident_seq' do
     subject { parser.ident_seq }
@@ -122,8 +154,8 @@ describe Kaleidoscope::Parser do
   it do should parse(
     <<-eos
       def foo(x, y, z) x + y + z
-      # some comment      
-      1 + 2 + 3
+      # some comment  
+      1 + foo(2, 3 + 4, 5) + 6
     eos
   ) end
   
