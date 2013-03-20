@@ -3,11 +3,8 @@ require 'rspec'
 require 'parslet/rig/rspec'
 
 
- 
-
-
 describe Kaleidoscope::Parser do
-  KEYWORDS = %w[def]
+  KEYWORDS = %w[def if then else]
   BINARY_OPS = %w[< > + - * /]
   UNARY_OPS = %w[+ -]
 
@@ -56,7 +53,7 @@ describe Kaleidoscope::Parser do
   context '#expr' do
     subject { parser.expr }
     
-    it { should parse('1 + b + foo(3)') }
+    it { should parse('1 + b + foo(3) + if 1 then 1 else 0') }
     
     it { should_not parse('x y') }
     it { should_not parse('x + y y + z') }
@@ -85,13 +82,12 @@ describe Kaleidoscope::Parser do
   end
   
   
-  context '#comment' do
-    subject { parser.comment }
+  context '#cond' do
+    it { should parse('if 1 then 1 else 0') }
+    it { should parse('if 1 > 1 then wtf() else ok()') }
+    it { should parse('if a < 0 then a * -1 else a') }
     
-    it { should parse('#') }
-    it { should parse('# THIS IS A COMMENT') }
-    
-    it { should_not parse("# THIS IS A COMMENT FOLLOWED BY STUFF\n1+1") }
+    it { should_not parse('if 1 then 1') }
   end
   
 
@@ -148,6 +144,16 @@ describe Kaleidoscope::Parser do
     it { should parse("def foo(x, y, z) x + y + z") }
     
     it { should_not parse("deffoo() 1") }
+  end
+  
+  
+  context '#comment' do
+    subject { parser.comment }
+    
+    it { should parse('#') }
+    it { should parse('# THIS IS A COMMENT') }
+    
+    it { should_not parse("# THIS IS A COMMENT FOLLOWED BY STUFF\n1+1") }
   end
   
   
