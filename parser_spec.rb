@@ -172,3 +172,37 @@ describe Kaleidoscope::Parser do
     it { should parse('  (  1  +  ( 1 +  1 )  )  ') }
   end
 end
+
+
+
+describe Kaleidoscope::Transform do
+  let(:transformer) { described_class.new }
+  let(:parser) { Kaleidoscope::Parser.new }
+  def transform(src)
+    transformer.apply(parser.parse(src)).first
+  end
+  
+  context 'not leaking Parslet::Slice objects when transforming' do
+    context 'variable identifiers' do
+      subject { transform('x') }
+      its(:name) { should_not be_a(Parslet::Slice) }
+      its(:name) { should be_a(String) }
+    end
+  
+    context 'function calls' do
+      subject { transform('f(x, y)') }
+      its(:name) { should_not be_a(Parslet::Slice) }
+      its(:name) { should be_a(String) }
+    end
+    
+    context 'function definitions' do
+      subject { transform('def f(x, y) x + y') }
+      its(:name) { should_not be_a(Parslet::Slice) }
+      its(:name) { should be_a(String) }
+      
+      # ...would be nice if there was a sweeter way to express these
+      it { subject.params.each{|p| p.should_not be_a(Parslet::Slice) } }
+      it { subject.params.each{|p| p.should be_a(String) } }
+    end
+  end
+end

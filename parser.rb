@@ -89,7 +89,7 @@ module Kaleidoscope
     }
     
     rule(ident: simple(:name)) {
-      Identifier.new(name)
+      Identifier.new(name.to_s)
     }
     
     rule(op: simple(:op), right: subtree(:right)) {
@@ -105,11 +105,11 @@ module Kaleidoscope
     }
     
     rule(ident: simple(:name), args: sequence(:args)) {
-      FuncCall.new(name, args)
+      FuncCall.new(name.to_s, args)
     }
     
     rule(ident: simple(:name), params: sequence(:params), body: subtree(:body)) {
-      FuncDef.new(name, params.map{|p| p.name }, body)
+      FuncDef.new(name.to_s, params.map{|p| p.name.to_s }, body)
     }
   end
 
