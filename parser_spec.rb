@@ -50,7 +50,7 @@ describe Kaleidoscope::Parser do
   end
   
   
-  context '#expr' do
+  describe '#expr' do
     subject { parser.expr }
     
     it { should parse('1 + b + foo(3) + if 1 then 1 else 0') }
@@ -82,7 +82,7 @@ describe Kaleidoscope::Parser do
   end
   
   
-  context '#cond' do
+  describe '#cond' do
     it { should parse('if 1 then 1 else 0') }
     it { should parse('if 1 > 1 then wtf() else ok()') }
     it { should parse('if a < 0 then a * -1 else a') }
@@ -91,7 +91,7 @@ describe Kaleidoscope::Parser do
   end
   
 
-  context '#expr_seq' do
+  describe '#expr_seq' do
     subject { parser.expr_seq }
     
     it { should parse('') }
@@ -107,7 +107,7 @@ describe Kaleidoscope::Parser do
   end
   
   
-  context '#func_call' do
+  describe '#func_call' do
     subject { parser.func_call }
     
     it { should parse('foo()') }
@@ -120,7 +120,7 @@ describe Kaleidoscope::Parser do
   end
   
   
-  context '#ident_seq' do
+  describe '#ident_seq' do
     subject { parser.ident_seq }
     
     it { should parse('') }
@@ -135,7 +135,7 @@ describe Kaleidoscope::Parser do
   end
   
 
-  context '#func_def' do
+  describe '#func_def' do
     subject { parser.func_def }
   
     it { should parse("def foo() 1") }
@@ -147,7 +147,7 @@ describe Kaleidoscope::Parser do
   end
   
   
-  context '#comment' do
+  describe '#comment' do
     subject { parser.comment }
     
     it { should parse('#') }
