@@ -182,6 +182,69 @@ describe Kaleidoscope::Transform do
     transformer.apply(parser.parse(src)).first
   end
   
+  
+  context 'transforming' do
+    context 'basic expressions' do
+      it { transform('x').should be_a(Kaleidoscope::Identifier) }
+      it { transform('x+y').should be_a(Kaleidoscope::OpSequence) }
+    end
+    
+    context 'conditionals' do
+      subject { transform('if x > y then x - y else y - x') }
+      it { should be_a(Kaleidoscope::Cond) }
+      its(:test) { should be_a(Kaleidoscope::OpSequence) }
+      its(:then_val) { should be_a(Kaleidoscope::OpSequence) }
+      its(:else_val) { should be_a(Kaleidoscope::OpSequence) }
+    end
+    
+    context 'function calls' do
+      context 'with no args' do
+        subject { transform('f()') }
+        it { should be_a(Kaleidoscope::FuncCall) }
+        its(:args) { should be_a(Array) }
+      end
+    
+      context 'with one arg' do
+        subject { transform('f(x + y)') }
+        it { should be_a(Kaleidoscope::FuncCall) }
+        its(:args) { should be_a(Array) }
+        it { subject.args.first.should be_a(Kaleidoscope::OpSequence) }
+      end
+      
+      context 'with multiple args' do
+        subject { transform('f(x, y + z)') }
+        it { should be_a(Kaleidoscope::FuncCall) }
+        its(:args) { should be_a(Array) }
+        it { subject.args.first.should be_a(Kaleidoscope::Identifier) }
+        it { subject.args.last.should be_a(Kaleidoscope::OpSequence) }
+      end
+    end
+    
+    context 'function definitions' do
+      context 'with no args' do
+        subject { transform('def f() 1') }
+        it { should be_a(Kaleidoscope::FuncDef) }
+        its(:params) { should be_a(Array) }
+        its(:body) { should be_a(Kaleidoscope::NumLiteral) }
+      end
+    
+      context 'with one arg' do
+        subject { transform('def f(x) x') }
+        it { should be_a(Kaleidoscope::FuncDef) }
+        its(:params) { should be_a(Array) }
+        its(:body) { should be_a(Kaleidoscope::Identifier) }
+      end
+      
+      context 'with multiple args' do
+        subject { transform('def f(x, y) x + y') }
+        it { should be_a(Kaleidoscope::FuncDef) }
+        its(:params) { should be_a(Array) }
+        its(:body) { should be_a(Kaleidoscope::OpSequence) }
+      end
+    end
+  end
+  
+  
   context 'not leaking Parslet::Slice objects when transforming' do
     context 'variable identifiers' do
       subject { transform('x') }
