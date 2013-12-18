@@ -77,7 +77,7 @@ module Kaleidoscope
         builder.position_at_end(orig_block.parent.basic_blocks.append())
         expr_emit = expr.emit(llvm_module, builder, scopes) # note: can point builder to new block
         builder.br(merge_block)
-        h[builder.insert_block] = expr_emit
+        h.merge!(builder.insert_block => expr_emit)
       end
       
       builder.position_at_end(orig_block)

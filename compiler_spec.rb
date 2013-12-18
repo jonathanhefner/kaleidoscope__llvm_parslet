@@ -48,6 +48,9 @@ describe 'Kaleidoscope.compile_run' do
       def g(x) x / 2
       f(1) > g(1)" => 1.0,
     
+    "def fac(n) if n > 1 then n * fac(n - 1) else 1
+      fac(4)" => 24.0,
+    
   }.each do |src, result|
     it(src) { Kaleidoscope.compile_run(src).should == result }
   end
