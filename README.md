@@ -1,38 +1,42 @@
 # Kaleidoscope
 
-An implementation of a *very simple* programming language, loosely following 
-the [LLVM/Kaleidoscope tutorials](http://llvm.org/docs/tutorial). 
-[Parslet](https://github.com/kschiess/parslet) is used for parsing, and 
-[ruby-llvm](https://github.com/ruby-llvm/ruby-llvm) is used for JIT compilation.
+A simple programming language loosely following the 
+[Kaleidoscope tutorial][].  Implemented in Ruby using [Parslet][] for 
+parsing and [LLVM][] for JIT compilation.
+
+  [kaleidoscope tutorial]: http://llvm.org/docs/tutorial/
+  [parslet]: http://kschiess.github.io/parslet/
+  [llvm]: http://llvm.org/
 
 
-## Installation
+## Prerequisites
 
-The current environment I'm working in (cygwin) only has LLVM 3.1, so I've 
-constrained the ruby-llvm gem to a version which supports that.  If you have a 
-newer version of LLVM, simply change the Gemfile to reflect that (the ruby-llvm 
-gem major and minor revision numbers match that of LLVM).
+Install LLVM 3.1 from source:
 
-After that, a simple `bundle install` should be sufficient (assuming you've 
-already installed [Bundler](http://bundler.io)).
+```bash
+wget http://llvm.org/releases/3.1/llvm-3.1.src.tar.gz
+
+tar -xzf llvm-3.1.src.tar.gz
+
+cd llvm-3.1.src
+
+# NOTE: skip docs because of incompatibility with current pod2man
+./configure --enable-shared --enable-jit --disable-docs --prefix=/usr/lib/llvm-3.1
+
+# This will take a while...
+make 
+
+sudo make install
+```
 
 
 ## Usage
 
-Create a file containing Kaleidoscope code, say factorial.kal:
+```bash
+cd /path/to/project
 
-    def fac(n)
-      if n > 1 then 
-        n * fac(n - 1)
-      else
-        1
-        
-    fac(10)
+# Ensure llvm is in PATH while building native extensions
+PATH="/usr/lib/llvm-3.1/bin:$PATH" bundle install
 
-Then feed that to the runner script, kal.rb:
-
-    $ cat factorial.kal | ruby kal.rb
-
-or 
-
-    $ ruby kal.rb factorial.kal
+bundle exec rspec spec --format documentation
+```
