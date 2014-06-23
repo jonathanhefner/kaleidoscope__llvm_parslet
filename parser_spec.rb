@@ -1,4 +1,5 @@
-require './parser.rb'
+$:<< File.join(File.dirname(__FILE__), '.')
+require 'parser'
 require 'rspec'
 require 'parslet/rig/rspec'
 

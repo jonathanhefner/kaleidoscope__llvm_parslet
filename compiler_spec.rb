@@ -1,4 +1,5 @@
-require './compiler'
+$:<< File.join(File.dirname(__FILE__), '.')
+require 'compiler'
 require 'rspec'
 
   
