@@ -11,23 +11,31 @@ parsing and [LLVM][] for JIT compilation.
 
 ## Prerequisites
 
-Install LLVM 3.1 from source:
+* Install Ruby and [Bundler](http://bundler.io/):
 
-```bash
-wget http://llvm.org/releases/3.1/llvm-3.1.src.tar.gz
+  ```bash
+  sudo apt-get install ruby
+  sudo gem install bundler
+  ```
 
-tar -xzf llvm-3.1.src.tar.gz
+* Install LLVM 3.1 from source:
 
-cd llvm-3.1.src
+  ```bash
+  wget http://llvm.org/releases/3.1/llvm-3.1.src.tar.gz
 
-# NOTE: skip docs because of incompatibility with current pod2man
-./configure --enable-shared --enable-jit --disable-docs --prefix=/usr/lib/llvm-3.1
+  tar -xzf llvm-3.1.src.tar.gz
 
-# This will take a while...
-make 
+  cd llvm-3.1.src
 
-sudo make install
-```
+  # NOTE: skip docs because of incompatibility with current pod2man
+  ./configure --enable-shared --enable-jit --disable-docs \
+              --prefix=/usr/lib/llvm-3.1
+
+  # This will take a while...
+  make
+
+  sudo make install
+  ```
 
 
 ## Usage
