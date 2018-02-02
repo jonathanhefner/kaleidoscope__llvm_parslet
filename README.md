@@ -1,7 +1,7 @@
 # Kaleidoscope
 
-A simple programming language loosely following the 
-[Kaleidoscope tutorial][].  Implemented in Ruby using [Parslet][] for 
+A simple programming language loosely following the
+[Kaleidoscope tutorial][].  Implemented in Ruby using [Parslet][] for
 parsing and [LLVM][] for JIT compilation.
 
   [kaleidoscope tutorial]: http://llvm.org/docs/tutorial/
@@ -9,42 +9,36 @@ parsing and [LLVM][] for JIT compilation.
   [llvm]: http://llvm.org/
 
 
-## Prerequisites
+## Installation
 
-* Install Ruby and [Bundler](http://bundler.io/):
+First, install LLVM 3.5 from source (this requires Python 2):
 
-  ```bash
-  sudo apt-get install ruby
-  sudo gem install bundler
-  ```
+```bash
+$ wget -qO- http://llvm.org/releases/3.5.2/llvm-3.5.2.src.tar.xz | tar -xJ
 
-* Install LLVM 3.1 from source:
+$ cd llvm-3.5.2.src
 
-  ```bash
-  wget http://llvm.org/releases/3.1/llvm-3.1.src.tar.gz
+$ ./configure --enable-shared --enable-jit --prefix=/usr/lib/llvm-3.5
 
-  tar -xzf llvm-3.1.src.tar.gz
+# This will take a while...
+$ make
 
-  cd llvm-3.1.src
+$ sudo make install
+```
 
-  # NOTE: skip docs because of incompatibility with current pod2man
-  ./configure --enable-shared --enable-jit --disable-docs \
-              --prefix=/usr/lib/llvm-3.1
+Next, run `bundle install` with a pointer to LLVM:
 
-  # This will take a while...
-  make
+```bash
+$ cd /path/to/kaleidoscope
 
-  sudo make install
-  ```
+$ LLVM_CONFIG=/usr/lib/llvm-3.5/bin/llvm-config bundle install
+```
 
 
 ## Usage
 
+Run the tests:
+
 ```bash
-cd /path/to/project
-
-# Ensure llvm is in PATH while building native extensions
-PATH="/usr/lib/llvm-3.1/bin:$PATH" bundle install
-
-bundle exec rspec spec --format documentation
+$ LD_LIBRARY_PATH=/usr/lib/llvm-3.5/lib bundle exec rspec spec --format documentation
 ```
