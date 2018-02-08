@@ -81,7 +81,7 @@ module Kaleidoscope
       end
 
       builder.position_at_end(orig_block)
-      test_emit = builder.fp2ui(test.emit(llvm_module, builder, scopes), LLVM::Int1)
+      test_emit = builder.fcmp(:une, test.emit(llvm_module, builder, scopes), LLVM::Double(0.0))
       builder.cond(test_emit, *block_emits.keys)
 
       builder.position_at_end(merge_block)

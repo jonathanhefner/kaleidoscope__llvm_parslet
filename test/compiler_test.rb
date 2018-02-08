@@ -73,6 +73,7 @@ class CompilerTest < Minitest::Test
       expected = val + (val.zero? ? 0.3 : 0.7)
 
       assert_float(expected, "if #{str} then #{str}.7 else #{str}.3")
+      assert_float(expected, "if -#{str} then #{str}.7 else #{str}.3")
     end
   end
 
