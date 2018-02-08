@@ -106,6 +106,9 @@ module Kaleidoscope
   class FuncDef
     def emit(llvm_module, builder, scopes)
       raise "ERROR! Redefinition of function #{name}" if llvm_module.functions.named(name)
+      params.group_by(&:itself).each do |p, ps|
+        raise "ERROR! Redefinition of parameter #{p} in function #{name}" if ps.length > 1
+      end
 
       orig_block = builder.insert_block
       scopes.push()

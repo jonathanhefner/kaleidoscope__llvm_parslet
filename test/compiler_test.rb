@@ -110,6 +110,10 @@ class CompilerTest < Minitest::Test
     refute_result "def f() 1   def f() 2"
   end
 
+  def test_redefined_parameter
+    refute_result "def f(x, x) x   f(1, 2)"
+  end
+
   def test_too_many_args
     refute_result "def f() 1   f(1)"
   end
