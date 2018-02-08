@@ -40,5 +40,5 @@ $ LLVM_CONFIG=/usr/lib/llvm-3.5/bin/llvm-config bundle install
 Run the tests:
 
 ```bash
-$ LD_LIBRARY_PATH=/usr/lib/llvm-3.5/lib bundle exec rspec spec --format documentation
+$ LD_LIBRARY_PATH=/usr/lib/llvm-3.5/lib bundle exec rake test
 ```
