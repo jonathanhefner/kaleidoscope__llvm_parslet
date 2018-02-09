@@ -1,7 +1,7 @@
-require 'llvm/core'
-require 'llvm/execution_engine'
-require 'llvm/transforms/scalar'
-require 'parser'
+require "llvm/core"
+require "llvm/execution_engine"
+require "llvm/transforms/scalar"
+require "parser"
 
 LLVM.init_jit
 
@@ -56,12 +56,12 @@ module Kaleidoscope
         right_emit = op_right.right.emit(llvm_module, builder, scopes)
 
         case op_right.op
-          when '+'; builder.fadd(left_emit, right_emit)
-          when '-'; builder.fsub(left_emit, right_emit)
-          when '*'; builder.fmul(left_emit, right_emit)
-          when '/'; builder.fdiv(left_emit, right_emit)
-          when '<'; builder.ui2fp(builder.fcmp(:ult, left_emit, right_emit), LLVM::Double)
-          when '>'; builder.ui2fp(builder.fcmp(:ugt, left_emit, right_emit), LLVM::Double)
+          when "+"; builder.fadd(left_emit, right_emit)
+          when "-"; builder.fsub(left_emit, right_emit)
+          when "*"; builder.fmul(left_emit, right_emit)
+          when "/"; builder.fdiv(left_emit, right_emit)
+          when "<"; builder.ui2fp(builder.fcmp(:ult, left_emit, right_emit), LLVM::Double)
+          when ">"; builder.ui2fp(builder.fcmp(:ugt, left_emit, right_emit), LLVM::Double)
         end
       end
     end
@@ -114,7 +114,7 @@ module Kaleidoscope
       scopes.push()
 
       func = llvm_module.functions.add(name, [LLVM::Double] * params.length, LLVM::Double)
-      entry = LLVM::BasicBlock.create(func, 'entry')
+      entry = LLVM::BasicBlock.create(func, "entry")
       builder.position_at_end(entry)
 
       func.params.each_with_index do |p, i|
@@ -138,12 +138,12 @@ module Kaleidoscope
   def self.compile_run(src)
     src = parse(src) if src.is_a?(String)
 
-    llvm_module = LLVM::Module.new('Kaleidoscope')
+    llvm_module = LLVM::Module.new("Kaleidoscope")
     builder = LLVM::Builder.new
     scopes = Scopes.new
 
-    main = llvm_module.functions.add('main', [], LLVM::Double)
-    builder.position_at_end(LLVM::BasicBlock.create(main, 'entry'))
+    main = llvm_module.functions.add("main", [], LLVM::Double)
+    builder.position_at_end(LLVM::BasicBlock.create(main, "entry"))
     retval = src.inject(nil){|val, s| s.emit(llvm_module, builder, scopes) }
     raise "ERROR! No return value" unless retval
     builder.ret(retval)
@@ -152,7 +152,7 @@ module Kaleidoscope
     #llvm_module.dump
 
     jit = LLVM::JITCompiler.new(llvm_module)
-    jit.run_function(llvm_module.functions['main']).to_f(LLVM::Double.type)
+    jit.run_function(llvm_module.functions["main"]).to_f(LLVM::Double.type)
   end
 
 end
