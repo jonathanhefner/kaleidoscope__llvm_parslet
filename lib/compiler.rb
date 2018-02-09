@@ -1,7 +1,7 @@
 require "llvm/core"
 require "llvm/execution_engine"
 require "llvm/transforms/scalar"
-require "parser"
+require_relative "parser"
 
 LLVM.init_jit
 
