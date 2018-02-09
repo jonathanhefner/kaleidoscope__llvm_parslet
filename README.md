@@ -34,11 +34,51 @@ $ cd /path/to/kaleidoscope
 $ LLVM_CONFIG=/usr/lib/llvm-3.5/bin/llvm-config bundle install
 ```
 
-
-## Usage
-
-Run the tests:
+Finally, run the tests:
 
 ```bash
 $ LD_LIBRARY_PATH=/usr/lib/llvm-3.5/lib bundle exec rake test
+```
+
+
+## Usage
+
+Compile and run a script using the `run` task:
+
+```bash
+$ LD_LIBRARY_PATH=/usr/lib/llvm-3.5/lib bundle exec rake run[path/to/script]
+```
+
+Try it with the scripts in the `examples` directory:
+
+```bash
+$ LD_LIBRARY_PATH=/usr/lib/llvm-3.5/lib bundle exec rake run[examples/factorial.kal]
+39916800.0
+
+$ LD_LIBRARY_PATH=/usr/lib/llvm-3.5/lib bundle exec rake run[examples/fibonacci.kal]
+89.0
+```
+
+###### Contents of `examples/factorial.kal`:
+```
+def factorial(n)
+  if n <= 1 then
+    1
+  else
+    n * factorial(n - 1)
+
+
+factorial(11)
+```
+
+###### Contents of `examples/fibonacci.kal`:
+```
+def fibonacci(n)
+  if n <= 2 then
+    1
+  else
+    fibonacci(n - 1) + fibonacci(n - 2)
+
+
+fibonacci(11)
 ```
