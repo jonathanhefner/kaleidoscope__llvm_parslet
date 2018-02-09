@@ -60,8 +60,12 @@ module Kaleidoscope
           when "-"; builder.fsub(left_emit, right_emit)
           when "*"; builder.fmul(left_emit, right_emit)
           when "/"; builder.fdiv(left_emit, right_emit)
+          when "=="; builder.ui2fp(builder.fcmp(:ueq, left_emit, right_emit), LLVM::Double)
+          when "!="; builder.ui2fp(builder.fcmp(:une, left_emit, right_emit), LLVM::Double)
           when "<"; builder.ui2fp(builder.fcmp(:ult, left_emit, right_emit), LLVM::Double)
           when ">"; builder.ui2fp(builder.fcmp(:ugt, left_emit, right_emit), LLVM::Double)
+          when "<="; builder.ui2fp(builder.fcmp(:ule, left_emit, right_emit), LLVM::Double)
+          when ">="; builder.ui2fp(builder.fcmp(:uge, left_emit, right_emit), LLVM::Double)
         end
       end
     end

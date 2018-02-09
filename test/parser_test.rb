@@ -14,7 +14,7 @@ class ParserTest < Minitest::Test
   OPERATOR_PRECEDENCE = {
     "*" => 0, "/" => 0,
     "+" => 1, "-" => 1,
-    "<" => 2, ">" => 2,
+    "==" => 2, "!=" => 2, "<" => 2, ">" => 2, "<=" => 2, ">=" => 2,
   }
 
   BINARY_OPERATORS = OPERATOR_PRECEDENCE.keys

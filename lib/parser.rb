@@ -20,7 +20,7 @@ module Kaleidoscope
 
     rule(:mult_op) { match('[*/]').as(:op) >> sp? }
     rule(:add_op) { match('[+-]').as(:op) >> sp? }
-    rule(:comp_op) { match('[<>]').as(:op) >> sp? }
+    rule(:comp_op) { (match('[=!]') >> str('=') | match('[<>]') >> str('=').maybe).as(:op) >> sp? }
 
     rule(:func_start) { str('def') >> eow }
     rule(:if_start) { str('if') >> eow }

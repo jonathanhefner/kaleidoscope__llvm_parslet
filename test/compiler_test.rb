@@ -5,6 +5,10 @@ class CompilerTest < Minitest::Test
 
   DIGITS = ("0".."9").zip((0..9).map(&:to_f))
 
+  COMPARISON_OPERATORS = %w[== != < > <= >=].reduce({}) do |h, op|
+    h.merge(op => op.to_sym.to_proc)
+  end
+
   def test_literals
     DIGITS.each do |str, val|
       assert_float(val, str)
@@ -41,21 +45,14 @@ class CompilerTest < Minitest::Test
     end
   end
 
-  def test_less_than
+  def test_comparison
     mid = DIGITS[5]
 
-    DIGITS.each do |str, val|
-      assert_bool(val < mid[1], "#{str} < #{mid[0]}")
-      assert_bool(mid[1] < val, "#{mid[0]} < #{str}")
-    end
-  end
-
-  def test_greater_than
-    mid = DIGITS[5]
-
-    DIGITS.each do |str, val|
-      assert_bool(val > mid[1], "#{str} > #{mid[0]}")
-      assert_bool(mid[1] > val, "#{mid[0]} > #{str}")
+    COMPARISON_OPERATORS.each do |op, cmp|
+      DIGITS.each do |str, val|
+        assert_bool(cmp.call(val, mid[1]), "#{str} #{op} #{mid[0]}")
+        assert_bool(cmp.call(mid[1], val), "#{mid[0]} #{op} #{str}")
+      end
     end
   end
 
